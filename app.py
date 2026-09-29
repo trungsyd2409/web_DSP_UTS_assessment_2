@@ -17,10 +17,12 @@ if currencies is None:
     st.error("Error fetching currency list")
     st.stop()
 
+
 # Add input fields for capturing amount, from and to currencies
 amount = st.number_input("Amount", value=1.0)
 from_currency = st.selectbox("From Currency", options=currencies)
 to_currency = st.selectbox("To Currency", options=currencies)
+
 
 # Display the latest rate and chart for selected currencies and amount
 if st.button("Get Latest Rate"):
@@ -34,7 +36,7 @@ if st.button("Get Latest Rate"):
         else:
             st.error("Error fetching latest rate")
 
-        # draw chart here
+        # Fetch and display the 3-year rate trend for the selected currencies
         with st.spinner("Fetching rate trend for the last 3 years..."):
             rate_trend = get_rate_trend(from_currency, to_currency, 3)
             if rate_trend is not None:
@@ -43,9 +45,11 @@ if st.button("Get Latest Rate"):
             else:
                 st.error("Error fetching rate trend")
 
+
 # Add a date selector (calendar)
 date = st.date_input("Select Date", value=datetime.date.today(
 ), min_value=datetime.date(1999, 1, 4), max_value=datetime.date.today())
+
 
 # Add a button to get and display the historical rate for selected date, currencies and amount
 if st.button("Get Historical Rate"):
