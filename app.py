@@ -19,7 +19,7 @@ if currencies is None:
 
 
 # Add input fields for capturing amount, from and to currencies
-amount = st.number_input("Amount", value=1.0)
+amount = st.number_input("Amount", value=1.0, min_value=0.01)
 from_currency = st.selectbox("From Currency", options=currencies)
 to_currency = st.selectbox("To Currency", options=currencies)
 

@@ -14,8 +14,10 @@ Users can:
 - View a quarterly exchange-rate trend chart for the past 3 years between the selected currencies.
 
 ### Challenges faced
-- Chart rendering doesn't fully match the referance mockup.
+- Chart rendering doesn't fully match the reference mockup.
 - Sequential API calls made the trend chart slow to load: Fetching approximately 12 quarterly rates one by one made the app feel slow. A ThreadPoolExecutor was used to fire all requests concurrently instead, cutting the wait to roughly one request's time.
+- For the bonus rate-trend feature, quarterly data points are aligned to fixed calendar quarters (Jan/Apr/Jul/Oct) rather than counting exactly 3 months back from today. This avoids edge cases with invalid dates when adding months.
+- `get_historical_rate()` only returns the rate, not the date, so when the requested date falls on a weekend or public holiday (and Frankfurter rolls the rate back to the last business day), the app still displays the date the user selected rather than the actual rate date.
 
 ### Feature to implement in future
 - Improve the rendering performance of the trend chart, and allow users to select number of years.
@@ -72,4 +74,4 @@ Streamlit will print a local URL (usually `http://localhost:8501`) - open it in 
 
 ## Citations
 - Frankfurter API and documentation: https://www.frankfurter.app/
-- Streamlit API reference (`st.line_chart`, `st.pyplot`, etc.): https://docs.streamlit.io/
+- Streamlit API reference: https://docs.streamlit.io/
