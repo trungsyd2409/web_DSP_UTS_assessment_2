@@ -22,7 +22,7 @@ amount = st.number_input("Amount", value=1.0)
 from_currency = st.selectbox("From Currency", options=currencies)
 to_currency = st.selectbox("To Currency", options=currencies)
 
-# Add a button to get and display the latest rate for selected currencies and amount
+# Display the latest rate and chart for selected currencies and amount
 if st.button("Get Latest Rate"):
     if from_currency == to_currency:
         st.warning("Please select different currencies for conversion.")
@@ -34,6 +34,7 @@ if st.button("Get Latest Rate"):
         else:
             st.error("Error fetching latest rate")
 
+        # draw chart here
         with st.spinner("Fetching rate trend for the last 3 years..."):
             rate_trend = get_rate_trend(from_currency, to_currency, 3)
             if rate_trend is not None:

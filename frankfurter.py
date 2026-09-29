@@ -53,12 +53,6 @@ def get_latest_rates(from_currency, to_currency, amount):
     float
         Latest FX conversion rate or None in case of error
     """
-
-    # Note: "amount" is intentionally not sent to the API. Frankfurter's
-    # "rates" value already returns the *converted total* (amount * rate)
-    # when an "amount" query param is passed, instead of the per-unit rate.
-    # We fetch the raw per-unit rate here and let currency.format_output()
-    # multiply it by amount, so the conversion is only applied once.
     url = f"{BASE_URL}/latest?from={from_currency}&to={to_currency}"
     code, response = get_url(url)
     if code == 200:
@@ -93,8 +87,6 @@ def get_historical_rate(from_currency, to_currency, from_date, amount):
     float
         Latest FX conversion rate or None in case of error
     """
-    # Same reasoning as in get_latest_rates(): fetch the per-unit rate only,
-    # amount conversion is applied later in currency.format_output().
     url = f"{BASE_URL}/{from_date}?from={from_currency}&to={to_currency}"
     code, response = get_url(url)
     if code == 200:
@@ -127,7 +119,7 @@ def get_rate_trend(from_currency: str, to_currency: str, years: int) -> dict:
     year = end_date.year
     month = ((end_date.month - 1) // 3) * 3 + 1
 
-    # Step 1: pre-generate the list of dates to fetch (no API calls here)
+    # pre-generate the list of dates to fetch without any API calls
     quarter_dates = []
     for i in range(years * 4):
         quarter_dates.append(datetime.date(year, month, 1))
@@ -136,7 +128,7 @@ def get_rate_trend(from_currency: str, to_currency: str, years: int) -> dict:
             month += 12
             year -= 1
 
-    # Step 2: fetch the rates concurrently using a thread pool
+    # fetch the rates concurrently using a thread pool
     trend_data = {}
     with ThreadPoolExecutor(max_workers=8) as executor:
         future_to_date = {
@@ -152,6 +144,5 @@ def get_rate_trend(from_currency: str, to_currency: str, years: int) -> dict:
             if rate is not None:
                 trend_data[d.strftime("%Y-%m-%d")] = rate
 
-    # Step 3: sort by date before returning — IMPORTANT, since threads can
-    # finish out of submission order
+    # return result
     return dict(sorted(trend_data.items()))

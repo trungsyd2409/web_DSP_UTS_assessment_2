@@ -1,4 +1,3 @@
-
 def round_rate(rate):
     """
     Function that will round an input float to 4 decimals places.
